@@ -1,0 +1,36 @@
+# Stage 1: Build the Go app
+FROM golang:1.23-alpine AS builder
+
+# Set working directory inside the container
+WORKDIR /app
+
+# Copy all files into the container
+COPY . .
+
+# Download Go dependencies (optional but best practice)
+RUN go mod download
+
+# Build the Go app from the cmd folder
+RUN go build -o app ./cmd
+
+# -------------------------------------------------------------
+
+# Stage 2: Run the app using a lightweight image
+FROM golang:1.23-alpine
+
+# Install SQLite library (needed by your binary)
+RUN apk --no-cache add sqlite-libs
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the compiled binary from the builder stage
+COPY --from=builder /app/app .
+
+# Copy any other needed files (like static files or configs if needed)
+
+# Expose the port your Go backend listens on (change if not 8080)
+EXPOSE 8080
+
+# Start the app
+CMD ["./app"]

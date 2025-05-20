@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: cmd/Dockerfile
+    container_name: backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - db-data:/app
+
+  frontend:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: http://backend:8080
+    container_name: frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  db-data:
