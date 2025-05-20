@@ -1,0 +1,27 @@
+name: Dev CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Backend
+        run: docker build -t my-backend ./cmd
+
+      - name: Build Frontend
+        run: docker build -t my-frontend ./web
+
+      # Optional: Run tests here
+
+      - name: Success Confirmation
+        run: echo "Build completed successfully!"

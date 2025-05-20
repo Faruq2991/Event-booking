@@ -113,3 +113,6 @@ go run ./cmd
 cd web
 npm install    (Go node modules)
 npm run dev    (Start the development server)
+
+---
+## CI/CD Pipeline
