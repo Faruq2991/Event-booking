@@ -1,9 +1,3 @@
-name: Dev CI/CD Pipeline
-
-on:
-  push:
-    branches: [ "main" ]
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,11 +9,23 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Build Backend
-        run: docker build -t my-backend -f cmd/Dockerfile .
+        run: docker build -t faruq96/my-backend:latest -f cmd/Dockerfile .
+
+      - name: Push Backend Image
+        run: docker push faruq96/my-backend:latest
 
       - name: Build Frontend
-        run: docker build -t my-frontend -f web/Dockerfile web
+        run: docker build -t faruq96/my-frontend:latest -f web/Dockerfile web
+
+      - name: Push Frontend Image
+        run: docker push faruq96/my-frontend:latest
 
       - name: Success Confirmation
-        run: echo "Build completed successfully!"
+        run: echo "Build and push completed successfully!"

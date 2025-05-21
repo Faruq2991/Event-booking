@@ -10,7 +10,8 @@ import (
 )
 
 func New( maxOpenConns int, maxIdleConns int, maxIdleTime string) (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", "/app/api.db") 
+	db, err := sql.Open("sqlite3", "/app/data/api.db")
+
 	if err != nil {
 		return nil, err
 	}

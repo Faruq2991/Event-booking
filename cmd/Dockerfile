@@ -4,7 +4,7 @@ FROM golang:1.23-alpine AS builder
 # Install build dependencies
 RUN apk add --no-cache gcc musl-dev sqlite-dev
 
-# Set working directory inside the container
+# Set working directory
 WORKDIR /app
 
 # Copy all files into the container
@@ -21,16 +21,23 @@ RUN CGO_ENABLED=1 GOOS=linux go build -o app ./cmd
 # Stage 2: Run the app using a lightweight image
 FROM alpine:latest
 
-# Install SQLite library
+# Install SQLite runtime
 RUN apk --no-cache add sqlite sqlite-libs
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy the compiled binary from the builder stage
-COPY --from=builder /app/app .
+# Ensure data directory exists
+RUN mkdir -p /app/data
 
-# Expose the port your Go backend listens on
+# Copy compiled binary from builder stage
+COPY --from=builder /app/app .
+COPY --from=builder /app/internal /app/internal
+
+# Optional: Copy static files, configs, templates, etc. if used
+# COPY --from=builder /app/templates /app/templates
+
+# Expose port
 EXPOSE 8080
 
 # Start the app
