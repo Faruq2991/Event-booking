@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      initContainers:
+      - name: init-db
+        image: busybox
+        command: ['sh', '-c', 'touch /data/api.db && chmod 666 /data/api.db']
+        volumeMounts:
+        - name: db-storage
+          mountPath: /data
+      containers:
+      - name: backend
+        image: faruq96/backend:latest  # Note: changed to match your actual image name
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: db-storage
+          mountPath: /app/data  # Mount as directory only, no subPath
+        env:
+        - name: PORT
+          value: "8080"
+        - name: DB_PATH
+          value: "/app/data/api.db"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+      volumes:
+      - name: db-storage
+        emptyDir: {}
