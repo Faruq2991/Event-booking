@@ -27,8 +27,8 @@ jobs:
 
     - name: Apply Kubernetes manifests
       run: |
-        kubectl apply -f k8s/namespace.yaml || true  # in case namespace already exists
-        kubectl apply -f k8s/backend-deployment.yaml
-        kubectl apply -f k8s/backend-svc.yaml
-        kubectl apply -f k8s/frontend-deployment.yaml
-        kubectl apply -f k8s/frontend-svc.yaml
+        kubectl apply -f k8s/manifests/namespace.yaml || true  # in case namespace already exists
+        kubectl apply -f k8s/manifests/backend-deployment.yaml
+        kubectl apply -f k8s/manifests/backend-svc.yaml
+        kubectl apply -f k8s/manifests/frontend-deployment.yaml
+        kubectl apply -f k8s/manifests/frontend-svc.yaml
